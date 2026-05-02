@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Institution {
+  id           Int           @id @default(autoincrement()) @map("institution_id")
+  name         String
+  consumptions Consumption[]
+
+  @@map("institutions")
+}
+
+model Activity {
+  id              Int              @id @default(autoincrement()) @map("activity_id")
+  name            String
+  unit            String
+  consumptions    Consumption[]
+  emissionFactors EmissionFactor[]
+
+  @@map("activities")
+}
+
+model EmissionFactor {
+  id          Int      @id @default(autoincrement()) @map("emission_factor_id")
+  activityId  Int      @map("activity_id")
+  year        Int
+  factorValue Float    @map("factor_value")
+  activity    Activity @relation(fields: [activityId], references: [id])
+
+  @@map("emission_factors")
+}
+
+model Consumption {
+  id            Int         @id @default(autoincrement()) @map("consumption_id")
+  consumption   Float
+  year          Int
+  month         Int
+  activityId    Int         @map("activity_id")
+  institutionId Int         @map("institution_id")
+  activity      Activity    @relation(fields: [activityId], references: [id])
+  institution   Institution @relation(fields: [institutionId], references: [id])
+
+  @@map("consumptions")
+}
