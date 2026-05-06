@@ -4,13 +4,13 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Institution {
   id           Int           @id @default(autoincrement()) @map("institution_id")
   name         String
   consumptions Consumption[]
+  reports Report[]
 
   @@map("institutions")
 }
@@ -47,3 +47,17 @@ model Consumption {
 
   @@map("consumptions")
 }
+
+model Report {
+  id            Int         @id @default(autoincrement()) @map("report_id")
+  institutionId Int         @map("institution_id")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  yearFrom      Int         @map("year_from")
+  yearTo        Int         @map("year_to")
+  totalCo2      Float       @map("total_co2")
+  filePath      String?     @map("file_path")
+  institution   Institution @relation(fields: [institutionId], references: [id])
+
+  @@map("reports")
+}
+
