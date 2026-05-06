@@ -38,9 +38,21 @@ async function main() {
   }
 
   const emissionFactors = [
-    { activityId: 1, year: 2024, factorValue: 0.42 },
-    { activityId: 2, year: 2024, factorValue: 1.89 },
-    { activityId: 3, year: 2024, factorValue: 2.6 },
+    // Electricity (activityId: 1)
+    { activityId: 1, year: 2020, factorValue: 0.4507 },
+    { activityId: 1, year: 2021, factorValue: 0.4200 },
+    { activityId: 1, year: 2022, factorValue: 0.3900 },
+    { activityId: 1, year: 2023, factorValue: 0.3800 },
+    // Gas (activityId: 2)
+    { activityId: 2, year: 2020, factorValue: 2.04 },
+    { activityId: 2, year: 2021, factorValue: 2.04 },
+    { activityId: 2, year: 2022, factorValue: 2.04 },
+    { activityId: 2, year: 2023, factorValue: 2.04 },
+    // Fuel (activityId: 3)
+    { activityId: 3, year: 2020, factorValue: 2.62 },
+    { activityId: 3, year: 2021, factorValue: 2.62 },
+    { activityId: 3, year: 2022, factorValue: 2.62 },
+    { activityId: 3, year: 2023, factorValue: 2.62 },
   ];
 
   for (const ef of emissionFactors) {
@@ -49,6 +61,59 @@ async function main() {
     });
     if (!existing) {
       await prisma.emissionFactor.create({ data: ef });
+    }
+  }
+
+  const consumptions = [
+    // University - 2022
+    { institutionId: 1, activityId: 1, year: 2022, month: 1, consumption: 85000 },
+    { institutionId: 1, activityId: 1, year: 2022, month: 2, consumption: 78000 },
+    { institutionId: 1, activityId: 1, year: 2022, month: 3, consumption: 72000 },
+    { institutionId: 1, activityId: 1, year: 2022, month: 6, consumption: 65000 },
+    { institutionId: 1, activityId: 1, year: 2022, month: 7, consumption: 60000 },
+    { institutionId: 1, activityId: 1, year: 2022, month: 12, consumption: 80000 },
+    { institutionId: 1, activityId: 2, year: 2022, month: 1, consumption: 3200 },
+    { institutionId: 1, activityId: 2, year: 2022, month: 2, consumption: 2900 },
+    { institutionId: 1, activityId: 2, year: 2022, month: 7, consumption: 400 },
+    { institutionId: 1, activityId: 2, year: 2022, month: 12, consumption: 3100 },
+    { institutionId: 1, activityId: 3, year: 2022, month: 1, consumption: 450 },
+    { institutionId: 1, activityId: 3, year: 2022, month: 6, consumption: 290 },
+    // University - 2023
+    { institutionId: 1, activityId: 1, year: 2023, month: 1, consumption: 88000 },
+    { institutionId: 1, activityId: 1, year: 2023, month: 2, consumption: 80000 },
+    { institutionId: 1, activityId: 1, year: 2023, month: 6, consumption: 67000 },
+    { institutionId: 1, activityId: 1, year: 2023, month: 12, consumption: 83000 },
+    { institutionId: 1, activityId: 2, year: 2023, month: 1, consumption: 3400 },
+    { institutionId: 1, activityId: 2, year: 2023, month: 7, consumption: 380 },
+    { institutionId: 1, activityId: 3, year: 2023, month: 1, consumption: 480 },
+    // Primary School - 2022
+    { institutionId: 6, activityId: 1, year: 2022, month: 1, consumption: 4200 },
+    { institutionId: 6, activityId: 1, year: 2022, month: 2, consumption: 3900 },
+    { institutionId: 6, activityId: 1, year: 2022, month: 7, consumption: 1200 },
+    { institutionId: 6, activityId: 1, year: 2022, month: 12, consumption: 4100 },
+    { institutionId: 6, activityId: 2, year: 2022, month: 1, consumption: 380 },
+    { institutionId: 6, activityId: 2, year: 2022, month: 2, consumption: 340 },
+    { institutionId: 6, activityId: 2, year: 2022, month: 12, consumption: 360 },
+    // High School - 2023
+    { institutionId: 5, activityId: 1, year: 2023, month: 1, consumption: 6500 },
+    { institutionId: 5, activityId: 1, year: 2023, month: 2, consumption: 6100 },
+    { institutionId: 5, activityId: 1, year: 2023, month: 7, consumption: 2000 },
+    { institutionId: 5, activityId: 2, year: 2023, month: 1, consumption: 520 },
+    { institutionId: 5, activityId: 2, year: 2023, month: 7, consumption: 80 },
+    { institutionId: 5, activityId: 3, year: 2023, month: 1, consumption: 120 },
+  ];
+
+  for (const c of consumptions) {
+    const existing = await prisma.consumption.findFirst({
+      where: {
+        institutionId: c.institutionId,
+        activityId: c.activityId,
+        year: c.year,
+        month: c.month,
+      },
+    });
+    if (!existing) {
+      await prisma.consumption.create({ data: c });
     }
   }
 
@@ -63,28 +128,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-
-
-const factors = [
-  // Electricity (activity_id: 1) - varies each year
-  { activityId: 1, year: 2020, factorValue: 0.4507 },
-  { activityId: 1, year: 2021, factorValue: 0.4200 },
-  { activityId: 1, year: 2022, factorValue: 0.3900 },
-  { activityId: 1, year: 2023, factorValue: 0.3800 },
-  // Gas (activity_id: 2) - stable
-  { activityId: 2, year: 2020, factorValue: 2.04 },
-  { activityId: 2, year: 2021, factorValue: 2.04 },
-  { activityId: 2, year: 2022, factorValue: 2.04 },
-  { activityId: 2, year: 2023, factorValue: 2.04 },
-  // Fuel (activity_id: 3) - stable
-  { activityId: 3, year: 2020, factorValue: 2.62 },
-  { activityId: 3, year: 2021, factorValue: 2.62 },
-  { activityId: 3, year: 2022, factorValue: 2.62 },
-  { activityId: 3, year: 2023, factorValue: 2.62 },
-];
-
-for (const factor of factors) {
-  await prisma.emissionFactor.create({
-    data: factor,
-  });
-}
