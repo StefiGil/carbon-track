@@ -135,7 +135,6 @@ carbon-track-app/
 ## 📊 Features
 
 - [x] Multi-institution support
-- [x] Multiple spaces per institution
 - [x] CO₂ calculation by energy source
 - [x] Annual emission factor management (Argentina)
 - [x] Data tables with filtering
@@ -153,5 +152,5 @@ This project was developed for academic purposes. Feel free to use or adapt it f
 
 ## 👩‍💻 Author
 
-Developed by **[Your Name]** — Environmental Engineering student.  
+Developed by **Stefania Gil** — Environmental Engineering student.  
 Built with 💚 to measure what matters.
