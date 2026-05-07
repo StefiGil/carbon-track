@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const links = [
-  { href: "/", label: "Analysis" },
   { href: "/guide", label: "Guide" },
+  { href: "/", label: "Analysis" },
   { href: "/about", label: "Reports" },
 ];
 
@@ -19,7 +19,7 @@ export default function Header() {
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-2xl">eco</span>
             <span className="text-lg font-semibold text-on-surface tracking-tight">
-              EcoCalc Institutional
+              CarbonTrack Institutional
             </span>
           </div>
           <div className="hidden sm:block h-6 w-px bg-outline-variant" />

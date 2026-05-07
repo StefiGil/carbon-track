@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Lexend } from "next/font/google";
 import "./globals.css";
-import Header from "./components/home/Header";
+import Header from "./components/analysis/Header";
 
 const lexend = Lexend({
   subsets: ["latin"],
@@ -10,8 +10,11 @@ const lexend = Lexend({
 });
 
 export const metadata: Metadata = {
-  title: "EcoCalc Institutional",
+  title: "CarbonTrack Institutional",
   description: "Carbon footprint calculator for educational institutions",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

@@ -8,7 +8,12 @@ import PeriodPicker, { DEFAULT_YEAR } from "./PeriodPicker";
 import EmissionCategories from "./EmissionCategories";
 import type { Institution, Activity, TimeMode } from "./types";
 
-export default function AnalysisConfigurator() {
+interface AnalysisConfiguratorProps {
+  institutionId: string;
+  onInstitutionChange: (id: string) => void;
+}
+
+export default function AnalysisConfigurator({ institutionId, onInstitutionChange }: AnalysisConfiguratorProps) {
   const router = useRouter();
   const [institutions, setInstitutions] = useState<Institution[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -16,8 +21,6 @@ export default function AnalysisConfigurator() {
   const [loadingActivities, setLoadingActivities] = useState(true);
   const [errorInstitutions, setErrorInstitutions] = useState(false);
   const [errorActivities, setErrorActivities] = useState(false);
-
-  const [institutionId, setInstitutionId] = useState("");
   const [timeMode, setTimeMode] = useState<TimeMode>("months");
   const [yearFrom, setYearFrom] = useState(DEFAULT_YEAR);
   const [yearTo, setYearTo] = useState(DEFAULT_YEAR);
@@ -30,7 +33,7 @@ export default function AnalysisConfigurator() {
       .then((res) => res.json())
       .then((data) => {
         setInstitutions(data.data);
-        if (data.data.length > 0) setInstitutionId(String(data.data[0].id));
+        if (data.data.length > 0) onInstitutionChange(String(data.data[0].id));
       })
       .catch(() => setErrorInstitutions(true))
       .finally(() => setLoadingInstitutions(false));
@@ -68,9 +71,15 @@ export default function AnalysisConfigurator() {
           loading={loadingInstitutions}
           error={errorInstitutions}
           value={institutionId}
-          onChange={setInstitutionId}
+          onChange={onInstitutionChange}
         />
-        <TimeModeToggle value={timeMode} onChange={setTimeMode} />
+        <TimeModeToggle
+          value={timeMode}
+          onChange={(mode) => {
+            setTimeMode(mode);
+            if (mode === "months") setYearTo(yearFrom);
+          }}
+        />
       </div>
 
       <PeriodPicker
@@ -79,7 +88,10 @@ export default function AnalysisConfigurator() {
         yearTo={yearTo}
         startMonth={startMonth}
         endMonth={endMonth}
-        onYearFromChange={setYearFrom}
+        onYearFromChange={(y) => {
+          setYearFrom(y);
+          if (timeMode === "months") setYearTo(y);
+        }}
         onYearToChange={setYearTo}
         onStartMonthChange={setStartMonth}
         onEndMonthChange={setEndMonth}
@@ -99,13 +111,17 @@ export default function AnalysisConfigurator() {
             const query = new URLSearchParams({
               institutionId,
               yearFrom: String(yearFrom),
-              yearTo: String(yearTo),
+              yearTo: String(timeMode === "months" ? yearFrom : yearTo),
               activityIds: Array.from(selectedActivities).join(","),
+              ...(timeMode === "months" && {
+                monthFrom: String(startMonth + 1),
+                monthTo: String(endMonth + 1),
+              }),
             });
             router.push(`/results?${query}`);
           }}
           disabled={!institutionId || selectedActivities.size === 0}
-          className="w-full sm:w-auto bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-medium text-body-md px-8 py-4 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full sm:w-auto bg-button-primary hover:bg-on-primary-fixed-variant text-on-primary font-medium text-body-md px-8 py-4 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Generate Analysis
           <span className="material-symbols-outlined text-[20px]">arrow_forward</span>

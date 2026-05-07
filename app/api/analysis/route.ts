@@ -12,6 +12,8 @@ export async function GET(req: NextRequest) {
     .split(",")
     .map(Number)
     .filter(Boolean);
+  const monthFrom = searchParams.get("monthFrom") ? Number(searchParams.get("monthFrom")) : null;
+  const monthTo = searchParams.get("monthTo") ? Number(searchParams.get("monthTo")) : null;
 
   if (!institutionId || !yearFrom || !yearTo || activityIds.length === 0) {
     return NextResponse.json(
@@ -27,6 +29,9 @@ export async function GET(req: NextRequest) {
           institutionId,
           activityId: { in: activityIds },
           year: { gte: yearFrom, lte: yearTo },
+          ...(monthFrom !== null && monthTo !== null && {
+            month: { gte: monthFrom, lte: monthTo },
+          }),
         },
         include: { activity: true },
       }),
@@ -45,9 +50,9 @@ export async function GET(req: NextRequest) {
       factorMap.set(`${f.activityId}-${f.year}`, f.factorValue);
     }
 
-    // Aggregate CO2e by year and activity
-    // byYear: { [year]: { [activityId]: { name, unit, co2e } } }
+    // Aggregate CO2e by year+activity and by month
     const byYear: Record<number, Record<number, { name: string; unit: string; co2e: number }>> = {};
+    const byMonth: Record<number, number> = {};
 
     for (const c of consumptions) {
       const factor = factorMap.get(`${c.activityId}-${c.year}`);
@@ -60,6 +65,8 @@ export async function GET(req: NextRequest) {
         byYear[c.year][c.activityId] = { name: c.activity.name, unit: c.activity.unit, co2e: 0 };
       }
       byYear[c.year][c.activityId].co2e += co2e;
+
+      byMonth[c.month] = (byMonth[c.month] ?? 0) + co2e;
     }
 
     // Build rows sorted by year
@@ -98,6 +105,13 @@ export async function GET(req: NextRequest) {
       percentage: grandTotal > 0 ? Math.round((data.co2e / grandTotal) * 100) : 0,
     }));
 
+    const monthlyRows = Object.entries(byMonth)
+      .sort(([a], [b]) => Number(a) - Number(b))
+      .map(([month, co2e]) => ({
+        month: Number(month),
+        total: Math.round(co2e * 100) / 100,
+      }));
+
     return NextResponse.json({
       data: {
         institution: { id: institutionId, name: institution?.name ?? "" },
@@ -105,6 +119,7 @@ export async function GET(req: NextRequest) {
         totalCo2e: grandTotal,
         breakdown,
         rows,
+        monthlyRows,
       },
     });
   } catch (error) {

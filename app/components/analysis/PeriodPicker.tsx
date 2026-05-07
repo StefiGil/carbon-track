@@ -19,7 +19,7 @@ const MONTHS = [
 
 const currentYear = new Date().getFullYear();
 export const AVAILABLE_YEARS = Array.from({ length: 6 }, (_, i) => currentYear - 1 - i);
-export const DEFAULT_YEAR = AVAILABLE_YEARS.find((y) => y <= 2023) ?? AVAILABLE_YEARS[0];
+export const DEFAULT_YEAR = AVAILABLE_YEARS[0];
 
 function periodLabel(timeMode: TimeMode, yearFrom: number, yearTo: number, startMonth: number, endMonth: number) {
   if (timeMode === "months") return `${MONTHS[startMonth]} – ${MONTHS[endMonth]} ${yearFrom}`;

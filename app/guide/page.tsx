@@ -2,6 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 import StepCard from "../components/guide/StepCard";
 
+const templateFiles = {
+  consumption: {
+    name: "consumption-data.xlsx",
+    href: "https://pxckfwaqlatmvozcjnry.supabase.co/storage/v1/object/public/assets-public/consumption-data.xlsx",
+  },
+  factors: {
+    name: "factors-data.xlsx",
+    href: "https://pxckfwaqlatmvozcjnry.supabase.co/storage/v1/object/public/assets-public/factors-data.xlsx",
+  },
+};
+
 function DownloadButton({ href }: { href: string }) {
   return (
     <a
@@ -47,9 +58,9 @@ export default function GuidePage() {
                 Ensure your Excel file has these columns accurately formatted:
               </p>
               <p className="font-mono text-label-sm bg-surface-variant text-on-surface px-3 py-2 rounded-lg">
-                institution, year, month, electricity_kwh, gas_m3, fuel_l
+                year, month, electricity_kwh, gas_m3, fuel_l
               </p>
-              <DownloadButton href="/example.xlsx" />
+              <DownloadButton href={templateFiles.consumption.href} />
             </div>
           }
           right={<ExampleImage src="/example-consumption.png" alt="Consumption data example" />}
@@ -71,35 +82,10 @@ export default function GuidePage() {
                 <span className="material-symbols-outlined text-base shrink-0 mt-0.5">info</span>
                 <span>You can find these factors at the Secretaria de Energia.</span>
               </div>
-              <DownloadButton href="/example.xlsx" />
+              <DownloadButton href={templateFiles.factors.href} />
             </div>
           }
           right={<ExampleImage src="/example-factors-data.png" alt="Emission factors example" />}
-        />
-
-        <StepCard
-          number={3}
-          title="Download your prepared data"
-          left={
-            <p className="text-body-md text-on-surface-variant">
-              Once you have accurately filled in all the required information in the templates,
-              download your Excel files. These files are now ready for institutional reporting
-              and analysis.
-            </p>
-          }
-          right={
-            <div className="bg-surface-variant rounded-xl p-6 flex justify-center gap-10">
-              {["factors-data.xlsx", "consumption-data.xlsx"].map((name) => (
-                <div key={name} className="flex flex-col items-center gap-2">
-                  <div className="w-14 h-14 rounded-full bg-primary-fixed flex items-center justify-center">
-                    <span className="material-symbols-outlined text-primary text-2xl">description</span>
-                  </div>
-                  <span className="text-caption text-on-surface-variant text-center">{name}</span>
-                  <span className="text-caption text-on-surface-variant font-medium">Example</span>
-                </div>
-              ))}
-            </div>
-          }
         />
 
         <div className="text-center pt-4 space-y-5">

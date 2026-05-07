@@ -20,6 +20,7 @@
   --text-caption--line-height: 1.4;
 
   --color-primary: #059669;
+  --color-button-primary: #047857;
   --color-on-primary: #ffffff;
   --color-primary-container: #10b981;
   --color-on-primary-container: #064e3b;
@@ -65,4 +66,10 @@
 
   --color-outline: #94a3b8;
   --color-outline-variant: #e2e8f0;
+}
+
+@layer utilities {
+  .bg-button-primary {
+    background-color: var(--color-button-primary);
+  }
 }

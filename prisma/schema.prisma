@@ -19,6 +19,7 @@ model Activity {
   id              Int              @id @default(autoincrement()) @map("activity_id")
   name            String
   unit            String
+  columnKey       String           @map("column_key")
   consumptions    Consumption[]
   emissionFactors EmissionFactor[]
 
