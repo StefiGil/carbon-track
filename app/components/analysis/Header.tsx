@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 const links = [
   { href: "/guide", label: "Guide" },
   { href: "/", label: "Analysis" },
-  { href: "/about", label: "Reports" },
+  // { href: "/reports", label: "Reports" }, // requires auth
 ];
 
 export default function Header() {
@@ -41,6 +41,10 @@ export default function Header() {
               </Link>
             );
           })}
+          <div className="w-px h-4 bg-outline-variant ml-4" />
+          <button className="text-on-surface-variant text-sm font-normal normal-case tracking-normal hover:text-primary transition-colors duration-200">
+            Iniciar sesión
+          </button>
         </nav>
       </div>
     </header>

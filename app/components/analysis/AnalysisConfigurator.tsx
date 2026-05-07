@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import InstitutionSelect from "./InstitutionSelect";
 import TimeModeToggle from "./TimeModeToggle";
-import PeriodPicker, { DEFAULT_YEAR } from "./PeriodPicker";
+import PeriodPicker from "./PeriodPicker";
 import EmissionCategories from "./EmissionCategories";
 import type { Institution, Activity, TimeMode } from "./types";
 
@@ -22,8 +22,9 @@ export default function AnalysisConfigurator({ institutionId, onInstitutionChang
   const [errorInstitutions, setErrorInstitutions] = useState(false);
   const [errorActivities, setErrorActivities] = useState(false);
   const [timeMode, setTimeMode] = useState<TimeMode>("months");
-  const [yearFrom, setYearFrom] = useState(DEFAULT_YEAR);
-  const [yearTo, setYearTo] = useState(DEFAULT_YEAR);
+  const [availableYears, setAvailableYears] = useState<number[]>([]);
+  const [yearFrom, setYearFrom] = useState(0);
+  const [yearTo, setYearTo] = useState(0);
   const [startMonth, setStartMonth] = useState(0);
   const [endMonth, setEndMonth] = useState(11);
   const [selectedActivities, setSelectedActivities] = useState<Set<number>>(new Set());
@@ -46,7 +47,26 @@ export default function AnalysisConfigurator({ institutionId, onInstitutionChang
       })
       .catch(() => setErrorActivities(true))
       .finally(() => setLoadingActivities(false));
+
   }, []);
+
+  useEffect(() => {
+    if (!institutionId) return;
+    setAvailableYears([]);
+    setYearFrom(0);
+    setYearTo(0);
+    fetch(`/api/consumption/years?institutionId=${institutionId}`)
+      .then((res) => res.json())
+      .then((data: { data: number[] }) => {
+        const years = data.data;
+        setAvailableYears(years);
+        if (years.length > 0) {
+          setYearFrom(years[years.length - 1]);
+          setYearTo(years[years.length - 1]);
+        }
+      })
+      .catch(() => {});
+  }, [institutionId]);
 
   function toggleActivity(id: number) {
     setSelectedActivities((prev) => {
@@ -88,6 +108,7 @@ export default function AnalysisConfigurator({ institutionId, onInstitutionChang
         yearTo={yearTo}
         startMonth={startMonth}
         endMonth={endMonth}
+        availableYears={availableYears}
         onYearFromChange={(y) => {
           setYearFrom(y);
           if (timeMode === "months") setYearTo(y);
@@ -120,7 +141,7 @@ export default function AnalysisConfigurator({ institutionId, onInstitutionChang
             });
             router.push(`/results?${query}`);
           }}
-          disabled={!institutionId || selectedActivities.size === 0}
+          disabled={!institutionId || selectedActivities.size === 0 || (timeMode === "months" && startMonth > endMonth)}
           className="w-full sm:w-auto bg-button-primary hover:bg-on-primary-fixed-variant text-on-primary font-medium text-body-md px-8 py-4 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Generate Analysis

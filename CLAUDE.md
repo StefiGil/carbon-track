@@ -48,3 +48,10 @@ carbon-track-app/
 ## Code Conventions
 - Code and comments in English
 - Nunca agregues emojies al codigo
+
+## Auth (última feature)
+- Login es la última feature a implementar
+- Sin login, múltiples usuarios compartirían la misma DB y se pisarían los cálculos
+- Reports (`/reports`) está comentado en el header hasta que exista autenticación
+- Una vez con login: los usuarios pueden guardar sus análisis y ver sus reportes históricos
+- El header muestra "Iniciar sesión" cuando no hay sesión activa

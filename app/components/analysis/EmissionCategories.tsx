@@ -8,6 +8,12 @@ interface Props {
   onToggle: (id: number) => void;
 }
 
+const ACTIVITY_ORDER: Record<string, number> = {
+  Electricity: 0,
+  Gas: 1,
+  Fuel: 2,
+};
+
 const ACTIVITY_ICONS: Record<string, string> = {
   Electricity: "bolt",
   Gas: "local_fire_department",
@@ -18,6 +24,24 @@ const ACTIVITY_DESCRIPTIONS: Record<string, string> = {
   Electricity: "Scope 2 emissions",
   Gas: "Heating & cooling",
   Fuel: "Institution vehicles",
+};
+
+const ACTIVITY_COLORS: Record<string, {
+  unselected: { bg: string; border: string; icon: string; text: string };
+  selected:   { bg: string; border: string; icon: string; text: string };
+}> = {
+  Electricity: {
+    unselected: { bg: "bg-indigo-50/50",  border: "border-indigo-100",  icon: "text-indigo-300", text: "text-indigo-300" },
+    selected:   { bg: "bg-indigo-100",    border: "border-indigo-300",  icon: "text-indigo-500", text: "text-indigo-400" },
+  },
+  Gas: {
+    unselected: { bg: "bg-amber-50/50",   border: "border-amber-100",   icon: "text-orange-300", text: "text-orange-300" },
+    selected:   { bg: "bg-amber-100",     border: "border-amber-300",   icon: "text-orange-500", text: "text-orange-400" },
+  },
+  Fuel: {
+    unselected: { bg: "bg-slate-50",      border: "border-slate-200",   icon: "text-slate-300",  text: "text-slate-400"  },
+    selected:   { bg: "bg-slate-200",     border: "border-slate-400",   icon: "text-slate-500",  text: "text-slate-500"  },
+  },
 };
 
 export default function EmissionCategories({ activities, loading, error, selected, onToggle }: Props) {
@@ -35,10 +59,13 @@ export default function EmissionCategories({ activities, loading, error, selecte
         <p className="text-error text-label-sm">Failed to load emission categories</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {activities.map((activity) => {
+          {[...activities].sort((a, b) => (ACTIVITY_ORDER[a.name] ?? 99) - (ACTIVITY_ORDER[b.name] ?? 99)).map((activity) => {
             const isSelected = selected.has(activity.id);
             const icon = ACTIVITY_ICONS[activity.name] ?? "category";
             const description = ACTIVITY_DESCRIPTIONS[activity.name] ?? "";
+            const fallback = { bg: "bg-surface", border: "border-outline-variant", icon: "text-on-surface-variant", text: "text-on-surface-variant" };
+            const colors = ACTIVITY_COLORS[activity.name] ?? { unselected: fallback, selected: fallback };
+            const c = isSelected ? colors.selected : colors.unselected;
 
             return (
               <label key={activity.id} className="relative cursor-pointer">
@@ -49,24 +76,20 @@ export default function EmissionCategories({ activities, loading, error, selecte
                   className="sr-only peer"
                 />
                 <div
-                  className={`h-full rounded-lg border p-4 transition-all ${
-                    isSelected
-                      ? "border-primary/40 bg-primary-fixed/20 shadow-[0_4px_12px_rgba(5,150,105,0.08)]"
-                      : "border-outline-variant bg-surface hover:border-outline hover:bg-surface-container-low"
+                  className={`h-full rounded-lg border p-4 transition-all ${c.bg} ${c.border} ${
+                    isSelected ? "shadow-[0_4px_12px_rgba(0,0,0,0.08)]" : "hover:brightness-95"
                   }`}
                 >
                   <div className="flex justify-between items-start mb-3">
                     <span
-                      className={`material-symbols-outlined text-[28px] ${
-                        isSelected ? "text-primary" : "text-on-surface-variant"
-                      }`}
+                      className={`material-symbols-outlined text-[28px] ${c.icon}`}
                       style={{ fontVariationSettings: "'wght' 400" }}
                     >
                       {icon}
                     </span>
                     {isSelected ? (
                       <span
-                        className="material-symbols-outlined text-primary text-[20px]"
+                        className={`material-symbols-outlined text-[20px] ${c.icon}`}
                         style={{ fontVariationSettings: "'FILL' 1" }}
                       >
                         check_circle
@@ -76,7 +99,7 @@ export default function EmissionCategories({ activities, loading, error, selecte
                     )}
                   </div>
                   <h3 className="text-[18px] font-medium text-on-surface">{activity.name}</h3>
-                  <p className="text-caption text-on-surface-variant mt-1">{description}</p>
+                  <p className={`text-caption mt-1 ${c.text}`}>{description}</p>
                 </div>
               </label>
             );
