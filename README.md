@@ -92,7 +92,7 @@ joined on `activity_id` + `year`.
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/carbon-track-app.git
+git clone https://github.com/StefiGil/carbon-track-app.git
 cd carbon-track-app
 
 # Install dependencies
