@@ -1,6 +1,6 @@
 # 🌱 Carbon Track App
 
-A web application for calculating and tracking greenhouse gas emissions (CO₂ equivalent) across institutions and their spaces, based on electricity, natural gas, and fuel consumption data.
+A web application for calculating and tracking greenhouse gas emissions (CO₂ equivalent) across institutions, based on electricity, natural gas, and fuel consumption data.
 
 Built as a final project for the **Gaseous Effluent Treatment** course, and extended to support multiple institutions for broader real-world impact.
 
@@ -139,8 +139,9 @@ carbon-track-app/
 - [x] Annual emission factor management (Argentina)
 - [x] Data tables with filtering
 - [x] Charts and visualizations
+- [ ] Excel data import
 - [ ] PDF report export *(coming soon)*
-- [ ] CSV data import *(coming soon)*
+
 
 ---
 
@@ -152,5 +153,5 @@ This project was developed for academic purposes. Feel free to use or adapt it f
 
 ## 👩‍💻 Author
 
-Developed by **Stefania Gil** — Environmental Engineering student.  
+Developed by **Stefania Gil** —  Student of the Bachelor's Degree in Environmental Technology, Faculty of Exact Sciences, UNICEN.
 Built with 💚 to measure what matters.
