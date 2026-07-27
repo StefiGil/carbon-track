@@ -1,4 +1,4 @@
-# Carbon Track App
+# Carbon Track
 
 A web application for calculating and tracking greenhouse gas emissions (CO₂ equivalent) across institutions, based on electricity, natural gas, and fuel consumption data.
 
