@@ -1,4 +1,4 @@
-# 🌱 Carbon Track App
+# Carbon Track App
 
 A web application for calculating and tracking greenhouse gas emissions (CO₂ equivalent) across institutions, based on electricity, natural gas, and fuel consumption data.
 
@@ -6,9 +6,9 @@ Built as a final project for the **Gaseous Effluent Treatment** course, and exte
 
 ---
 
-## 🎯 Purpose
+## Purpose
 
-Many institutions — universities, schools, hospitals, companies — have no easy way to measure or visualize their carbon footprint. Carbon Track App provides a simple, data-driven tool to:
+Many institutions (universities, schools, hospitals, companies) have no easy way to measure or visualize their carbon footprint. Carbon Track App provides a simple, data-driven tool to:
 
 - Input energy consumption data (electricity, gas, fuel)
 - Automatically calculate CO₂ equivalent emissions
@@ -17,7 +17,7 @@ Many institutions — universities, schools, hospitals, companies — have no ea
 
 ---
 
-## 🏗️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -31,7 +31,7 @@ Many institutions — universities, schools, hospitals, companies — have no ea
 
 ---
 
-## 🌍 Emission Factors
+## Emission Factors
 
 Emission factors used in this app are based on **Argentina's national energy matrix**, sourced from the *Cálculo de la Huella de Carbono Institucional de la UNLP (2019)*, published by the Dirección de Seguridad, Higiene y Desarrollo Sustentable — Secretaría de Planeamiento, Obras y Servicios de la UNLP. These factors are updated periodically (typically annually) to reflect changes in the country's energy mix.
 
@@ -42,13 +42,13 @@ Emission factors used in this app are based on **Argentina's national energy mat
 | Gasoline (95 oct.) | 2.07 kg CO₂/L | UNLP 2019 | Liters |
 | Diesel | 2.62 kg CO₂/L | UNLP 2019 | Liters |
 
-> ⚠️ Electricity emission factors vary year to year. The database stores a factor per year to allow accurate historical calculations.
+> Electricity emission factors vary year to year. The database stores a factor per year to allow accurate historical calculations.
 
-> 📌 Natural gas consumption is taken directly from utility bills in m³. The emission factor for natural gas is pending confirmation with the course faculty.
+> Natural gas consumption is taken directly from utility bills in m³. The emission factor for natural gas is pending confirmation with the course faculty.
 
 ---
 
-## 🗂️ Data Model (Overview)
+## Data Model (Overview)
 
 ```
 institutions
@@ -80,7 +80,7 @@ joined on `activity_id` + `year`.
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -132,20 +132,20 @@ carbon-track-app/
 
 ---
 
-## 📊 Features
+## Features
 
-- [x] Multi-institution support
-- [x] CO₂ calculation by energy source
-- [x] Annual emission factor management (Argentina)
-- [x] Data tables with filtering
-- [x] Charts and visualizations
-- [ ] Excel data import
-- [ ] PDF report export *(coming soon)*
+- Multi-institution support
+- CO₂ calculation by energy source
+- Annual emission factor management (Argentina)
+- Data tables with filtering
+- Charts and visualizations
+- Excel data import
+- PDF report export
 
 
 ---
 
-## 📄 License
+## License
 
 This project was developed for academic purposes. Feel free to use or adapt it for educational and non-commercial use.
 
@@ -154,4 +154,3 @@ This project was developed for academic purposes. Feel free to use or adapt it f
 ## 👩‍💻 Author
 
 Developed by **Stefania Gil** —  Student of the Bachelor's Degree in Environmental Technology, Faculty of Exact Sciences, UNICEN.
-Built with 💚 to measure what matters.
