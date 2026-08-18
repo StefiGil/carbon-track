@@ -44,7 +44,7 @@ export default function GuidePage() {
             User Guide: How to prepare and upload your data
           </h1>
           <p className="text-body-lg text-on-surface-variant max-w-2xl">
-            Follow these three simple steps to ensure your environmental reporting is accurate,
+            Follow these simple guide to ensure your environmental reporting is accurate,
             compliant, and ready for institutional analysis.
           </p>
         </div>
@@ -66,31 +66,9 @@ export default function GuidePage() {
           right={<ExampleImage src="/example-consumption.png" alt="Consumption data example" />}
         />
 
-        <StepCard
-          number={2}
-          title="Emission Factors"
-          reverse
-          left={
-            <div className="space-y-3">
-              <p className="text-body-md text-on-surface-variant">
-                Your Excel should include specific calculation constants:
-              </p>
-              <p className="font-mono text-label-sm bg-surface-variant text-on-surface px-3 py-2 rounded-lg">
-                year, electricity_factor, gas_factor, fuel_factor
-              </p>
-              <div className="flex items-start gap-2 bg-primary-fixed text-on-primary-fixed text-label-sm px-3 py-2.5 rounded-lg mt-2">
-                <span className="material-symbols-outlined text-base shrink-0 mt-0.5">info</span>
-                <span>You can find these factors at the Secretaria de Energia.</span>
-              </div>
-              <DownloadButton href={templateFiles.factors.href} />
-            </div>
-          }
-          right={<ExampleImage src="/example-factors-data.png" alt="Emission factors example" />}
-        />
-
         <div className="text-center pt-4 space-y-5">
           <p className="text-body-md text-on-surface-variant">
-            Your files are ready — head to the analysis page to upload them and generate your report.
+            Your file is ready, head to the analysis page to upload it and generate your report.
           </p>
           <Link
             href="/"
