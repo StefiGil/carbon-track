@@ -43,7 +43,6 @@ export default function AnalysisConfigurator({ institutionId, onInstitutionChang
       .then((res) => res.json())
       .then((data) => {
         setActivities(data.data);
-        if (data.data.length > 0) setSelectedActivities(new Set([data.data[0].id]));
       })
       .catch(() => setErrorActivities(true))
       .finally(() => setLoadingActivities(false));

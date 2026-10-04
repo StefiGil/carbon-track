@@ -13,7 +13,8 @@ interface ExecutiveSummaryProps {
 const BAR_COLORS: Record<string, string> = {
   Electricity: "bg-primary",
   Gas: "bg-on-surface",
-  Fuel: "bg-error",
+  Diesel: "bg-slate-500",
+  Gasoline: "bg-rose-400",
 };
 
 export default function ExecutiveSummary({ totalCo2e, breakdown }: ExecutiveSummaryProps) {

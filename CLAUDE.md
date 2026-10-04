@@ -45,6 +45,15 @@ carbon-track-app/
 - If the API fails, show a clear error message
 - Always check `/designs` before building a page
 
+## Methodology
+- Read `docs/metodologia-huella-de-carbono.md` before touching calculations, emission factors, units, or the About page
+- Emission factors live in the database; users never enter them
+
+## Reglas de trabajo
+- Nunca hagas cambios (editar, crear o borrar archivos, commits, migraciones) sin autorizacion explicita de la usuaria
+- Si algo se puede responder o explicar en el chat, hacelo ahi
+- Proponer cambios es el ultimo recurso: describilos en el chat y esperá aprobacion antes de aplicarlos
+
 ## Code Conventions
 - Code and comments in English
 - Nunca agregues emojies al codigo

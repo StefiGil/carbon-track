@@ -11,19 +11,22 @@ interface Props {
 const ACTIVITY_ORDER: Record<string, number> = {
   Electricity: 0,
   Gas: 1,
-  Fuel: 2,
+  Diesel: 2,
+  Gasoline: 3,
 };
 
 const ACTIVITY_ICONS: Record<string, string> = {
   Electricity: "bolt",
   Gas: "local_fire_department",
-  Fuel: "local_gas_station",
+  Diesel: "local_shipping",
+  Gasoline: "local_gas_station",
 };
 
 const ACTIVITY_DESCRIPTIONS: Record<string, string> = {
   Electricity: "Scope 2 emissions",
   Gas: "Heating & cooling",
-  Fuel: "Institution vehicles",
+  Diesel: "Diesel vehicles & generators",
+  Gasoline: "Gasoline vehicles",
 };
 
 const ACTIVITY_COLORS: Record<string, {
@@ -38,9 +41,13 @@ const ACTIVITY_COLORS: Record<string, {
     unselected: { bg: "bg-amber-50/50",   border: "border-amber-100",   icon: "text-orange-300", text: "text-orange-300" },
     selected:   { bg: "bg-amber-100",     border: "border-amber-300",   icon: "text-orange-500", text: "text-orange-400" },
   },
-  Fuel: {
+  Diesel: {
     unselected: { bg: "bg-slate-50",      border: "border-slate-200",   icon: "text-slate-300",  text: "text-slate-400"  },
     selected:   { bg: "bg-slate-200",     border: "border-slate-400",   icon: "text-slate-500",  text: "text-slate-500"  },
+  },
+  Gasoline: {
+    unselected: { bg: "bg-rose-50/50",    border: "border-rose-100",    icon: "text-rose-300",   text: "text-rose-300"   },
+    selected:   { bg: "bg-rose-100",      border: "border-rose-300",    icon: "text-rose-500",   text: "text-rose-400"   },
   },
 };
 
@@ -50,15 +57,15 @@ export default function EmissionCategories({ activities, loading, error, selecte
       <label className="text-label-sm text-on-surface-variant block">Emission Categories</label>
 
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {[1, 2, 3].map((i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {[1, 2, 3, 4].map((i) => (
             <div key={i} className="h-28 bg-surface-container-low rounded-lg animate-pulse" />
           ))}
         </div>
       ) : error ? (
         <p className="text-error text-label-sm">Failed to load emission categories</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {[...activities].sort((a, b) => (ACTIVITY_ORDER[a.name] ?? 99) - (ACTIVITY_ORDER[b.name] ?? 99)).map((activity) => {
             const isSelected = selected.has(activity.id);
             const icon = ACTIVITY_ICONS[activity.name] ?? "category";

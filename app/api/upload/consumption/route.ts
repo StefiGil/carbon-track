@@ -29,6 +29,22 @@ export async function POST(req: NextRequest) {
   // Load activities with their columnKey to map Excel columns → activityId
   const activities = await prisma.activity.findMany();
 
+  // Every expected column must be present in the header row
+  const headers = new Set(
+    (XLSX.utils.sheet_to_json<unknown[]>(sheet, { header: 1 })[0] ?? []).map((h) => String(h).trim())
+  );
+  const expectedColumns = ["year", "month", ...activities.map((a) => a.columnKey)];
+  const missingColumns = expectedColumns.filter((c) => !headers.has(c));
+
+  if (missingColumns.length > 0) {
+    return NextResponse.json(
+      {
+        error: `Missing columns: ${missingColumns.join(", ")}. Expected columns: ${expectedColumns.join(", ")}.`,
+      },
+      { status: 400 }
+    );
+  }
+
   // Build consumption records from each Excel row
   const records: { institutionId: number; activityId: number; year: number; month: number; consumption: number }[] = [];
 

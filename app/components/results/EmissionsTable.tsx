@@ -29,7 +29,16 @@ export default function EmissionsTable({ rows }: { rows: YearRow[] }) {
     );
   }
 
-  const allActivities = rows[0].activities.map((a) => ({ activityId: a.activityId, name: a.name, unit: a.unit }));
+  // Collect activities from every year, since some may only have data in later years
+  const activitiesById = new Map<number, { activityId: number; name: string; unit: string }>();
+  for (const row of rows) {
+    for (const a of row.activities) {
+      if (!activitiesById.has(a.activityId)) {
+        activitiesById.set(a.activityId, { activityId: a.activityId, name: a.name, unit: a.unit });
+      }
+    }
+  }
+  const allActivities = [...activitiesById.values()].sort((a, b) => a.activityId - b.activityId);
 
   const totalsPerActivity: Record<number, number> = {};
   for (const row of rows) {

@@ -1,6 +1,6 @@
 # Carbon Track
 
-A web application for calculating and tracking greenhouse gas emissions (CO₂ equivalent) across institutions, based on electricity, natural gas, and fuel consumption data.
+A web application for calculating and tracking greenhouse gas emissions (CO₂ equivalent) across institutions, based on electricity, natural gas, diesel, and gasoline consumption data.
 
 Built as a final project for the **Gaseous Effluent Treatment** course, and extended to support multiple institutions for broader real-world impact.
 
@@ -10,7 +10,7 @@ Built as a final project for the **Gaseous Effluent Treatment** course, and exte
 
 Many institutions (universities, schools, hospitals, companies) have no easy way to measure or visualize their carbon footprint. Carbon Track App provides a simple, data-driven tool to:
 
-- Input energy consumption data (electricity, gas, fuel)
+- Input energy consumption data (electricity, natural gas, diesel, gasoline) from an Excel template
 - Automatically calculate CO₂ equivalent emissions
 - Visualize results through charts and tables
 - Export reports for environmental reporting or academic purposes
@@ -33,18 +33,18 @@ Many institutions (universities, schools, hospitals, companies) have no easy way
 
 ## Emission Factors
 
-Emission factors used in this app are based on **Argentina's national energy matrix**, sourced from the *Cálculo de la Huella de Carbono Institucional de la UNLP (2019)*, published by the Dirección de Seguridad, Higiene y Desarrollo Sustentable — Secretaría de Planeamiento, Obras y Servicios de la UNLP. These factors are updated periodically (typically annually) to reflect changes in the country's energy mix.
+The app estimates **Scope 1 and Scope 2** emissions (GHG Protocol) and is designed for **institutions in Argentina**: the electricity factor reflects Argentina's national grid, so it does not apply to other countries. Emission factors are stored in the database and applied automatically; users only upload consumption data and never enter factors.
 
-| Source | Factor | Unit | Input |
-|---|---|---|---|
-| Electricity | 0.4507 kg CO₂/kWh | Updated per year | kWh (from bill) |
-| Natural Gas | ~2.04 kg CO₂/m³ | To be confirmed | m³ (from bill) |
-| Gasoline (95 oct.) | 2.07 kg CO₂/L | UNLP 2019 | Liters |
-| Diesel | 2.62 kg CO₂/L | UNLP 2019 | Liters |
+| Source | Scope | Factor | Unit | Reference |
+|---|---|---|---|---|
+| Electricity | 2 | One value per year (0.428 in 2019 to 0.429 in 2023) | kg CO₂/kWh | Argentina's Secretariat of Energy, Simple Operating Margin method (CAMMESA data) |
+| Natural gas | 1 | 2.19 | kg CO₂e/m³ | IPCC 2006, stationary combustion |
+| Diesel | 1 | 2.70 | kg CO₂/L | US EPA Emission Factors Hub 2025 |
+| Gasoline (95 oct.) | 1 | 2.32 | kg CO₂/L | US EPA Emission Factors Hub 2025 |
 
-> Electricity emission factors vary year to year. The database stores a factor per year to allow accurate historical calculations.
+> Only the electricity factor changes over time, because it depends on the energy mix. Natural gas and liquid fuels depend on the fuel's physicochemical properties, so their factor is constant.
 
-> Natural gas consumption is taken directly from utility bills in m³. The emission factor for natural gas is pending confirmation with the course faculty.
+The full methodology, selection criteria and limitations are documented in [docs/metodologia-de-huella-carbono.md](docs/metodologia-de-huella-carbono.md).
 
 ---
 
@@ -57,8 +57,9 @@ institutions
 
 activities
   activity_id (PK)
-  name            ← e.g. Electricity, Natural Gas, Fuel
-  unit            ← e.g. kWh, m³, L
+  name            ← Electricity, Gas, Diesel, Gasoline
+  unit            ← kWh, m³, L
+  column_key      ← Excel column, e.g. electricity_kwh, diesel_l
 
 emission_factors
   emission_factor_id (PK)
@@ -85,8 +86,8 @@ joined on `activity_id` + `year`.
 ### Prerequisites
 
 - Node.js 18+
-- PostgreSQL database
-- npm or yarn
+- Docker (runs the local PostgreSQL database)
+- npm
 
 ### Installation
 
@@ -98,9 +99,11 @@ cd carbon-track-app
 # Install dependencies
 npm install
 
-# Set up environment variables
-cp .env.example .env
-# Fill in your DATABASE_URL and other variables
+# Start the PostgreSQL database (see docker-compose.yml)
+docker compose up -d
+
+# Create a .env file with the database connection
+# DATABASE_URL="postgresql://<user>@localhost:5432/carbon_track_db" (credentials as in docker-compose.yml)
 
 # Run database migrations
 npx prisma migrate dev
@@ -118,29 +121,32 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ```
 carbon-track-app/
 ├── app/                  # Next.js App Router
-│   ├── api/              # API routes (backend)
-│   ├── dashboard/        # Main dashboard page
-│   ├── institutions/     # Institution management
-│   └── ...
-├── components/           # Reusable React components
-├── lib/                  # Utilities, DB client, helpers
+│   ├── page.tsx          # Analysis page (upload data and configure)
+│   ├── results/          # Results page (charts and tables)
+│   ├── guide/            # How to prepare and upload data
+│   ├── components/       # UI components, grouped by page
+│   └── api/              # API routes (backend)
+├── lib/
+│   └── prisma.ts         # Prisma client
 ├── prisma/
-│   └── schema.prisma     # Database schema
-├── public/
-└── ...
+│   ├── schema.prisma     # Database schema
+│   ├── seed.ts
+│   └── migrations/
+├── designs/              # UI reference screenshots
+├── docs/                 # Methodology, diagrams and task list
+├── public/               # Static assets
+└── docker-compose.yml    # Local PostgreSQL
 ```
 
 ---
 
 ## Features
 
-- Multi-institution support
-- CO₂ calculation by energy source
-- Annual emission factor management (Argentina)
-- Data tables with filtering
-- Charts and visualizations
-- Excel data import
-- PDF report export
+- CO₂e calculation by energy source (Scope 1 and 2) for institutions in Argentina
+- Emission factors stored in the database, one value per year for electricity
+- Excel data import with a standard template
+- Charts and tables with filtering by period and category
+- PDF report export (planned)
 
 
 ---

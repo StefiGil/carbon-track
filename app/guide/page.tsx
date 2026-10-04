@@ -4,12 +4,8 @@ import StepCard from "../components/guide/StepCard";
 
 const templateFiles = {
   consumption: {
-    name: "consumption-data.xlsx",
-    href: "https://pxckfwaqlatmvozcjnry.supabase.co/storage/v1/object/public/assets-public/consumption-data.xlsx",
-  },
-  factors: {
-    name: "factors-data.xlsx",
-    href: "https://pxckfwaqlatmvozcjnry.supabase.co/storage/v1/object/public/assets-public/factors-data.xlsx",
+    name: "template-comsuption.xlsx",
+    href: "https://pxckfwaqlatmvozcjnry.supabase.co/storage/v1/object/public/assets-public/template-comsuption.xlsx",
   },
 };
 
@@ -29,7 +25,8 @@ function DownloadButton({ href }: { href: string }) {
 function ExampleImage({ src, alt }: { src: string; alt: string }) {
   return (
     <div className="rounded-xl overflow-hidden border border-outline-variant">
-      <Image src={src} alt={alt} width={480} height={280} className="w-full h-auto object-cover" />
+      {/* unoptimized: skip Next's image cache so a replaced screenshot shows up right away */}
+      <Image src={src} alt={alt} width={480} height={280} unoptimized className="w-full h-auto object-cover" />
     </div>
   );
 }
@@ -58,12 +55,12 @@ export default function GuidePage() {
                 Ensure your Excel file has these columns accurately formatted:
               </p>
               <p className="font-mono text-label-sm bg-surface-variant text-on-surface px-3 py-2 rounded-lg">
-                year, month, electricity_kwh, gas_m3, fuel_l
+                year, month, electricity_kwh, gas_m3, diesel_l, gasoline_l
               </p>
               <DownloadButton href={templateFiles.consumption.href} />
             </div>
           }
-          right={<ExampleImage src="/example-consumption.png" alt="Consumption data example" />}
+          right={<ExampleImage src="https://pxckfwaqlatmvozcjnry.supabase.co/storage/v1/object/public/assets-public/comsuption-example.png" alt="Consumption data example" />}
         />
 
         <div className="text-center pt-4 space-y-5">
