@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const links = [
-  { href: "/guide", label: "Guide" },
-  { href: "/", label: "Analysis" },
+  { href: "/", label: "Home" },
+  { href: "/analysis", label: "Analysis" },
+  { href: "/about", label: "About" },
   // { href: "/reports", label: "Reports" }, // requires auth
 ];
 
@@ -16,12 +17,12 @@ export default function Header() {
     <header className="w-full bg-surface border-b border-outline-variant">
       <div className="max-w-[1200px] mx-auto px-6 md:px-12 h-16 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <span className="material-symbols-outlined text-primary text-2xl">eco</span>
             <span className="text-lg font-semibold text-on-surface tracking-tight">
               CarbonTrack Institutional
             </span>
-          </div>
+          </Link>
           <div className="hidden sm:block h-6 w-px bg-outline-variant" />
         </div>
         <nav className="flex items-center gap-8">
@@ -43,7 +44,7 @@ export default function Header() {
           })}
           <div className="w-px h-4 bg-outline-variant ml-4" />
           <button className="text-on-surface-variant text-sm font-normal normal-case tracking-normal hover:text-primary transition-colors duration-200">
-            Iniciar sesión
+            Sign in
           </button>
         </nav>
       </div>

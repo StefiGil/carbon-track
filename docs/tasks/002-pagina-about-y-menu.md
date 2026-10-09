@@ -1,6 +1,6 @@
 # 002 - Pagina About y entrada en el menu
 
-Estado: pendiente
+Estado: hecha
 
 ## Objetivo
 
@@ -22,6 +22,8 @@ Crear la pagina About (`app/about/page.tsx`) que explique el proyecto y su metod
    - Formula de calculo (Ec. 1 y Ec. 2).
    - Fuentes y alcances (GHG Protocol): electricidad (Alcance 2), gas natural, gasoil y nafta (Alcance 1).
    - De donde salen los factores de emision y por que el factor electrico es por ano.
+   - Rezago de los factores electricos: la Secretaria de Energia publica cada valor con unos dos anios de demora, por lo que los anios recientes pueden no tener factor y no se calculan. Es una explicacion fija; el aviso concreto de que anios se omitieron esta en la tarea 007.
+   - Fuentes de cada factor (Secretaria de Energia, CAMMESA, IPCC, US EPA), como nota discreta o seccion propia. Los datos salen de `/api/emission-factors`, que ya devuelve `source` y `sourceUrl` (tarea 006).
    - Limitaciones y trabajo futuro.
    - Referencias.
 3. Construir `app/about/page.tsx` y los componentes en `app/components/about/`, siguiendo el diseno de Stitch.
@@ -41,6 +43,11 @@ Crear la pagina About (`app/about/page.tsx`) que explique el proyecto y su metod
 - El contenido es coherente con `docs/metodologia-de-huella-carbono.md` y no menciona la metodologia anterior (UNLP 2019).
 - Si algun dato viene de la API, hay estado de carga y mensaje de error.
 - Sin emojis en el codigo; codigo y comentarios en ingles.
+
+## Relacion con otras tareas
+
+- 006: provee las fuentes de los factores a traves de la API; la nota visible con esas fuentes se hace aca.
+- 007: muestra en Resultados el aviso de anios sin factor; este texto explica el motivo.
 
 ## Depende de
 

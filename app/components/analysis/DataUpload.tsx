@@ -75,11 +75,12 @@ function UploadZone({ label, file, onFileChange, disabled }: UploadZoneProps) {
 
 interface DataUploadProps {
   institutionId: string;
+  onUploaded: () => void;
 }
 
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
-export default function DataUpload({ institutionId }: DataUploadProps) {
+export default function DataUpload({ institutionId, onUploaded }: DataUploadProps) {
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<UploadStatus>("idle");
   const [message, setMessage] = useState<string | null>(null);
@@ -110,6 +111,7 @@ export default function DataUpload({ institutionId }: DataUploadProps) {
         setStatus("success");
         setMessage(`${json.data.inserted} records loaded successfully.`);
         setFile(null);
+        onUploaded();
       }
     } catch {
       setStatus("error");

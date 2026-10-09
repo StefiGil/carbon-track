@@ -19,7 +19,8 @@ La exportacion a PDF debe funcionar igual con o sin sesion iniciada: es la funci
 - Cambios de otras tareas que afectan al reporte:
   - 001: cuatro categorias (gasoil y nafta separados) en resumen, graficos y tabla.
   - 005: nombre de la institucion escrito por la persona, y fecha de generacion automatica.
-  - 006: nota en letra pequena con el origen de los factores.
+  - 006: factores con fuente guardada en la base; el reporte puede mostrar una nota breve que remita a About, donde se detallan las fuentes (tarea 002).
+  - 006: la serie de factores llega hasta 2023, asi que los consumos posteriores no se calculan (ver aviso de anios omitidos en los pasos).
   - 002: aviso de que la herramienta aplica solo a instituciones de Argentina (considerar tambien en el reporte).
 - Bug conocido: la pagina no pasa `monthFrom` y `monthTo` a la API, por lo que el filtro por meses no se aplica. Debe estar resuelto antes de dar por bueno el reporte (anotado en 005).
 
@@ -39,6 +40,7 @@ La exportacion a PDF debe funcionar igual con o sin sesion iniciada: es la funci
 
 1. Disenar el reporte en Google Stitch (pantalla y version para PDF) y guardar las capturas en `designs/`. Lo hace Stefania.
 2. Resolver el filtro por meses para que el reporte refleje el periodo elegido.
+   Ademas, avisar en Resultados que anios o actividades se omitieron por no tener factor: `/api/analysis` debe devolverlos en la respuesta y la pagina mostrar un mensaje visible (por ejemplo, "No se calcularon 2024 y 2025: aun no hay factor de emision publicado"), con un enlace a About.
 3. Aplicar el nuevo diseno a los componentes de `app/components/results/`, con cuatro categorias, estados de carga y mensajes de error claros.
 4. Definir un idioma unico y ajustar los textos.
 5. Elegir la libreria con un prototipo corto, y documentar la decision.
@@ -54,6 +56,7 @@ La exportacion a PDF debe funcionar igual con o sin sesion iniciada: es la funci
 - El PDF incluye nombre de la institucion, periodo, fecha de generacion y fuentes de los factores.
 - Ningun grafico ni fila de tabla queda cortado entre paginas.
 - El reporte muestra las cuatro categorias y respeta el filtro por meses.
+- Si el periodo incluye anios sin factor, el reporte (pantalla y PDF) lo indica de forma visible en lugar de omitirlos en silencio.
 - La interfaz usa un solo idioma.
 - Sin emojis en el codigo; codigo y comentarios en ingles.
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import InstitutionSelect from "./InstitutionSelect";
+import InstitutionNameInput from "./InstitutionNameInput";
 import TimeModeToggle from "./TimeModeToggle";
 import PeriodPicker from "./PeriodPicker";
 import EmissionCategories from "./EmissionCategories";
@@ -10,10 +11,11 @@ import type { Institution, Activity, TimeMode } from "./types";
 
 interface AnalysisConfiguratorProps {
   institutionId: string;
+  dataUploaded: boolean;
   onInstitutionChange: (id: string) => void;
 }
 
-export default function AnalysisConfigurator({ institutionId, onInstitutionChange }: AnalysisConfiguratorProps) {
+export default function AnalysisConfigurator({ institutionId, dataUploaded, onInstitutionChange }: AnalysisConfiguratorProps) {
   const router = useRouter();
   const [institutions, setInstitutions] = useState<Institution[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -25,13 +27,17 @@ export default function AnalysisConfigurator({ institutionId, onInstitutionChang
   const [availableYears, setAvailableYears] = useState<number[]>([]);
   const [yearFrom, setYearFrom] = useState(0);
   const [yearTo, setYearTo] = useState(0);
+  const [institutionName, setInstitutionName] = useState("");
   const [startMonth, setStartMonth] = useState(0);
   const [endMonth, setEndMonth] = useState(11);
   const [selectedActivities, setSelectedActivities] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     fetch("/api/institutions")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Request failed");
+        return res.json();
+      })
       .then((data) => {
         setInstitutions(data.data);
         if (data.data.length > 0) onInstitutionChange(String(data.data[0].id));
@@ -40,7 +46,10 @@ export default function AnalysisConfigurator({ institutionId, onInstitutionChang
       .finally(() => setLoadingInstitutions(false));
 
     fetch("/api/activities")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Request failed");
+        return res.json();
+      })
       .then((data) => {
         setActivities(data.data);
       })
@@ -55,7 +64,10 @@ export default function AnalysisConfigurator({ institutionId, onInstitutionChang
     setYearFrom(0);
     setYearTo(0);
     fetch(`/api/consumption/years?institutionId=${institutionId}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Request failed");
+        return res.json();
+      })
       .then((data: { data: number[] }) => {
         const years = data.data;
         setAvailableYears(years);
@@ -85,13 +97,16 @@ export default function AnalysisConfigurator({ institutionId, onInstitutionChang
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <InstitutionSelect
-          institutions={institutions}
-          loading={loadingInstitutions}
-          error={errorInstitutions}
-          value={institutionId}
-          onChange={onInstitutionChange}
-        />
+        <div className="space-y-4">
+          <InstitutionSelect
+            institutions={institutions}
+            loading={loadingInstitutions}
+            error={errorInstitutions}
+            value={institutionId}
+            onChange={onInstitutionChange}
+          />
+          <InstitutionNameInput value={institutionName} onChange={setInstitutionName} />
+        </div>
         <TimeModeToggle
           value={timeMode}
           onChange={(mode) => {
@@ -122,6 +137,7 @@ export default function AnalysisConfigurator({ institutionId, onInstitutionChang
         loading={loadingActivities}
         error={errorActivities}
         selected={selectedActivities}
+        disabled={!dataUploaded}
         onToggle={toggleActivity}
       />
 
@@ -133,6 +149,7 @@ export default function AnalysisConfigurator({ institutionId, onInstitutionChang
               yearFrom: String(yearFrom),
               yearTo: String(timeMode === "months" ? yearFrom : yearTo),
               activityIds: Array.from(selectedActivities).join(","),
+              ...(institutionName.trim() && { institutionName: institutionName.trim() }),
               ...(timeMode === "months" && {
                 monthFrom: String(startMonth + 1),
                 monthTo: String(endMonth + 1),

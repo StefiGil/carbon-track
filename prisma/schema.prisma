@@ -31,8 +31,11 @@ model EmissionFactor {
   activityId  Int      @map("activity_id")
   year        Int
   factorValue Float    @map("factor_value")
+  source      String?
+  sourceUrl   String?  @map("source_url")
   activity    Activity @relation(fields: [activityId], references: [id])
 
+  @@unique([activityId, year])
   @@map("emission_factors")
 }
 

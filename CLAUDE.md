@@ -18,7 +18,8 @@ carbon-track-app/
 │  │  └─ home/               # Components specific to the main page
 │  └─ api/                   # API routes (backend)
 ├─ lib/
-│  └─ prisma.ts              # Prisma client singleton
+│  ├─ prisma.ts              # Prisma client singleton
+│  └─ data/                  # Static UI copy and display metadata (about/, activities.ts)
 ├─ prisma/
 │  ├─ schema.prisma
 │  ├─ seed.ts
@@ -33,9 +34,9 @@ carbon-track-app/
 ```
 
 ## Pages (build one at a time, in this order)
-1. **Analysis** (`app/page.tsx`) — upload Excel files + configure analysis + generate
+1. **Analysis** (`app/analysis/page.tsx`) — upload Excel files + configure analysis + generate
 2. **Results** (`app/results/page.tsx`) — charts, tables, export PDF
-3. **Guide** (`app/guide/page.tsx`) — how to prepare and upload data
+3. **Home** (`app/page.tsx`) — guide: what the app does and how to prepare and upload data
 4. **About** (`app/about/page.tsx`) — project info
 
 ## Frontend Conventions
@@ -63,4 +64,4 @@ carbon-track-app/
 - Sin login, múltiples usuarios compartirían la misma DB y se pisarían los cálculos
 - Reports (`/reports`) está comentado en el header hasta que exista autenticación
 - Una vez con login: los usuarios pueden guardar sus análisis y ver sus reportes históricos
-- El header muestra "Iniciar sesión" cuando no hay sesión activa
+- El header muestra "Sign in" cuando no hay sesión activa

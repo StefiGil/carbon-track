@@ -1,37 +1,20 @@
 # 006 - Cargar factores de emision reales y mostrar sus fuentes
 
-Estado: pendiente
+Estado: hecha
 
 ## Objetivo
 
 1. Cargar en la base de datos los factores de emision de todos los anios disponibles y eliminar los factores ficticios que quedaron como temporales.
 2. Dejar el registro versionado en el repositorio, de modo que la base se pueda reconstruir en cualquier momento (local, Supabase, Vercel).
-3. Mostrar a quien usa la app, en letra pequena, de donde salen los factores y que provienen de instituciones confiables.
+3. Mencionar en la pagina de About que queda por hacer, de donde salen los factores y que provienen de instituciones confiables.
 
 ## Contexto
 
 - Los factores viven en la tabla `emission_factors` (`activityId`, `year`, `factorValue`). El calculo (`app/api/analysis/route.ts`) busca el factor por actividad y anio; si no existe, el consumo se omite sin aviso.
 - `prisma/seed.ts` hoy no carga factores ni actividades: solo borra unos consumos de prueba. Los datos actuales se cargaron a mano y no se pueden reconstruir.
 - El schema no guarda de donde sale cada factor, y no hay restriccion de unicidad por `(activityId, year)`, por lo que un seed repetido duplicaria filas.
-- Fuentes definidas en `docs/metodologia-de-huella-de-carbono.md`:
 
-| Fuente | Factor | Unidad | Referencia |
-|---|---|---|---|
-| Electricidad (un valor por anio) | 2019: 0,428; 2020: 0,443; 2021: 0,459; 2022: 0,450; 2023: 0,429 (y los anios anteriores disponibles) | kg CO2/kWh | Secretaria de Energia de la Nacion, Margen de Operacion Simple, datos de CAMMESA |
-| Gas natural | 2,19 | kg CO2e/m3 | IPCC 2006, combustion estacionaria |
-| Gasoil | 2,70 | kg CO2/L | US EPA Emission Factors Hub 2025 |
-| Nafta | 2,32 | kg CO2/L | US EPA Emission Factors Hub 2025 |
-
-- La metodologia indica que la serie electrica esta disponible desde 2006 hasta 2023, y que el gas y los combustibles no cambian con el tiempo.
-
-## Decisiones a tomar
-
-- **Anios a cargar para electricidad:** todos los que Stefania tiene (hasta 2006) o solo desde 2019. Definir con el listado completo en mano.
-- **Gas, gasoil y nafta por anio:** como el calculo busca por anio, hay que repetir el mismo valor en cada anio cargado, o cambiar el calculo para usar un factor sin anio cuando el factor es constante. Se propone repetir el valor por anio para no tocar el calculo.
-- **Donde guardar la fuente:** agregar al schema campos de referencia en `EmissionFactor` (por ejemplo `source` y `sourceUrl`, o una tabla `sources` relacionada). Requiere migracion.
-- **Donde mostrar la nota de fuentes:** al pie del reporte de Resultados, en la pagina About (tarea 002) o en ambos. Se propone ambos, con un texto corto en el reporte que remita a About.
-- **Anios sin factor:** que hace la app cuando la persona sube consumos de un anio posterior al ultimo factor cargado (hoy se omiten en silencio). Se resuelve aca o en una tarea propia; como minimo, no ocultarlo.
-- **Que se borra:** confirmar que todos los factores actuales de la base son temporales y se reemplazan por completo, y que pasa con los consumos que hoy dependen de ellos.
+- La metodologia indica que la serie electrica esta disponible desde 2006 hasta 2023, y que el gas y los combustibles no cambian con el tiempo (verificar desde los enlaces que estan en Informe-Carbon-Track-Gil-2026.md)
 
 ## Pasos
 
@@ -42,15 +25,16 @@ Estado: pendiente
 5. Limpiar los factores temporales de la base y ejecutar el seed.
 6. Verificar que existe un factor para cada actividad y cada anio cargado, y que el analisis calcula los valores esperados con un caso de prueba conocido.
 7. Exponer la fuente de cada factor a traves de la API (`/api/emission-factors` ya devuelve los factores y puede incluirla).
-8. Agregar la nota en letra pequena con el origen de los factores y las instituciones que los respaldan (Secretaria de Energia, IPCC, US EPA, CAMMESA), sin hardcodear los valores: la nota toma los datos de la API.
-9. Actualizar la documentacion: metodologia (lista de anios cargados) y README.
+8. Actualizar la documentacion: metodologia (lista de anios cargados) y README.
+
+La nota con las fuentes de los factores se hace en la tarea 002 (About) y el aviso de anios sin factor en la 007 (Resultados).
 
 ## Criterios de aceptacion
 
 - Los factores temporales ya no existen en la base.
 - Ejecutar el seed sobre una base vacia o existente deja los mismos factores, sin duplicados.
 - Cada actividad tiene factor para todos los anios cargados.
-- El reporte muestra una nota discreta con las fuentes de los factores, y el contenido proviene de la base.
+- La API de factores devuelve la fuente de cada uno (`source` y `sourceUrl`), lista para usarse en About.
 - El calculo de un caso conocido coincide con consumo por factor a mano.
 - Sin emojis en el codigo; codigo y comentarios en ingles.
 
@@ -77,3 +61,10 @@ Sigue pendiente de esta tarea:
 - Campos de fuente en el schema, restriccion unica `(activityId, year)`, archivo de datos versionado y seed idempotente.
 - La nota con las fuentes en el reporte.
 - Anios posteriores a 2025 o sin factor.
+
+## Resultado
+
+- Migracion `add_source_and_unique_to_emission_factors`: campos `source` y `sourceUrl` y unicidad `(activityId, year)`.
+- Datos versionados en `prisma/data/emission-factors.ts`: electricidad (Margen de Operacion Simple) 2006 a 2023; gas, gasoil y nafta con el mismo valor por anio en ese rango.
+- `prisma/seed.ts` idempotente (upsert); se ejecuta con `npx prisma db seed`.
+- Los consumos de anios sin factor (2024 en adelante) no se calculan; el aviso queda para la tarea 007.

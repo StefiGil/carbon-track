@@ -37,7 +37,7 @@ The app estimates **Scope 1 and Scope 2** emissions (GHG Protocol) and is design
 
 | Source | Scope | Factor | Unit | Reference |
 |---|---|---|---|---|
-| Electricity | 2 | One value per year (0.428 in 2019 to 0.429 in 2023) | kg CO₂/kWh | Argentina's Secretariat of Energy, Simple Operating Margin method (CAMMESA data) |
+| Electricity | 2 | One value per year, 2006 to 2023 (0.516 in 2006, 0.429 in 2023) | kg CO₂/kWh | Argentina's Secretariat of Energy, Simple Operating Margin method (CAMMESA data) |
 | Natural gas | 1 | 2.19 | kg CO₂e/m³ | IPCC 2006, stationary combustion |
 | Diesel | 1 | 2.70 | kg CO₂/L | US EPA Emission Factors Hub 2025 |
 | Gasoline (95 oct.) | 1 | 2.32 | kg CO₂/L | US EPA Emission Factors Hub 2025 |
@@ -66,6 +66,7 @@ emission_factors
   activity_id (FK → activities)
   year
   factor_value    ← kg CO₂e per unit
+  source, source_url  ← where the factor comes from
 
 consumptions
   consumption_id (PK)
@@ -108,6 +109,9 @@ docker compose up -d
 # Run database migrations
 npx prisma migrate dev
 
+# Load activities and emission factors (idempotent, data in prisma/data/emission-factors.ts)
+npx prisma db seed
+
 # Start the development server
 npm run dev
 ```
@@ -131,6 +135,7 @@ carbon-track-app/
 ├── prisma/
 │   ├── schema.prisma     # Database schema
 │   ├── seed.ts
+│   ├── data/               # Versioned emission factors
 │   └── migrations/
 ├── designs/              # UI reference screenshots
 ├── docs/                 # Methodology, diagrams and task list

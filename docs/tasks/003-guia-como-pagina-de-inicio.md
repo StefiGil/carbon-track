@@ -1,6 +1,6 @@
 # 003 - Guia como pagina de inicio
 
-Estado: pendiente
+Estado: hecha
 
 ## Objetivo
 
@@ -47,3 +47,14 @@ Recomendacion: opcion 2, porque evita un redirect y deja una URL canonica por pa
 
 - Si se hace antes de la 002, el link "About" se agrega al header ya con las rutas nuevas.
 - El parrafo introductorio tambien se modifica en la 005; el resalte de la frase debe conservarse.
+
+## Avance realizado
+
+- Se aplico la opcion 1 (redirect): `/` redirige a `/guide` y Analisis paso a `app/analysis/page.tsx` (`/analysis`).
+- Header: Analysis apunta a `/analysis`. El boton de la Guia lleva a `/analysis`.
+- `CLAUDE.md` actualizado con la nueva ruta de Analisis.
+- Frase "Upload your consumption data to start." resaltada en negrita en el parrafo introductorio de Analisis.
+- El README no menciona rutas, por lo que no requirio cambios.
+- Flujo completo (Guia, Analisis, Resultados) probado por Stefania.
+- Se uso primero la opcion 1 (redirect) y luego se paso a la opcion 2: la Guia vive en `/` (`app/page.tsx`) y ya no existe `/guide`. Analisis esta en `/analysis`.
+- La pestania del menu se llama "Home" (antes "Guide") y el logo del header lleva a `/`.

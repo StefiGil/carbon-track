@@ -1,3 +1,4 @@
+import { ACTIVITIES_IN_ORDER, ACTIVITY_DISPLAY } from "@/lib/data/activities";
 import type { Activity } from "./types";
 
 interface Props {
@@ -5,56 +6,29 @@ interface Props {
   loading: boolean;
   error: boolean;
   selected: Set<number>;
+  disabled: boolean;
   onToggle: (id: number) => void;
 }
 
-const ACTIVITY_ORDER: Record<string, number> = {
-  Electricity: 0,
-  Gas: 1,
-  Diesel: 2,
-  Gasoline: 3,
-};
+const DISABLED_COLORS = { bg: "bg-surface-container-low", border: "border-outline-variant", icon: "text-slate-300", text: "text-slate-400" };
 
-const ACTIVITY_ICONS: Record<string, string> = {
-  Electricity: "bolt",
-  Gas: "local_fire_department",
-  Diesel: "local_shipping",
-  Gasoline: "local_gas_station",
-};
+export default function EmissionCategories({ activities, loading, error, selected, disabled: awaitingUpload, onToggle }: Props) {
+  // If the API fails, show the static categories as inactive cards next to the error.
+  const items = error
+    ? ACTIVITIES_IN_ORDER.map((a, index) => ({ id: -(index + 1), name: a.name }))
+    : activities;
+  const disabled = awaitingUpload || error;
 
-const ACTIVITY_DESCRIPTIONS: Record<string, string> = {
-  Electricity: "Scope 2 emissions",
-  Gas: "Heating & cooling",
-  Diesel: "Diesel vehicles & generators",
-  Gasoline: "Gasoline vehicles",
-};
-
-const ACTIVITY_COLORS: Record<string, {
-  unselected: { bg: string; border: string; icon: string; text: string };
-  selected:   { bg: string; border: string; icon: string; text: string };
-}> = {
-  Electricity: {
-    unselected: { bg: "bg-indigo-50/50",  border: "border-indigo-100",  icon: "text-indigo-300", text: "text-indigo-300" },
-    selected:   { bg: "bg-indigo-100",    border: "border-indigo-300",  icon: "text-indigo-500", text: "text-indigo-400" },
-  },
-  Gas: {
-    unselected: { bg: "bg-amber-50/50",   border: "border-amber-100",   icon: "text-orange-300", text: "text-orange-300" },
-    selected:   { bg: "bg-amber-100",     border: "border-amber-300",   icon: "text-orange-500", text: "text-orange-400" },
-  },
-  Diesel: {
-    unselected: { bg: "bg-slate-50",      border: "border-slate-200",   icon: "text-slate-300",  text: "text-slate-400"  },
-    selected:   { bg: "bg-slate-200",     border: "border-slate-400",   icon: "text-slate-500",  text: "text-slate-500"  },
-  },
-  Gasoline: {
-    unselected: { bg: "bg-rose-50/50",    border: "border-rose-100",    icon: "text-rose-300",   text: "text-rose-300"   },
-    selected:   { bg: "bg-rose-100",      border: "border-rose-300",    icon: "text-rose-500",   text: "text-rose-400"   },
-  },
-};
-
-export default function EmissionCategories({ activities, loading, error, selected, onToggle }: Props) {
   return (
     <div className="space-y-3 border-t border-outline-variant pt-6">
       <label className="text-label-sm text-on-surface-variant block">Emission Categories</label>
+      {error && <p className="text-error text-label-sm">Failed to load emission categories</p>}
+      {awaitingUpload && !loading && !error && (
+        <p className="text-caption text-on-surface-variant flex items-center gap-1">
+          <span className="material-symbols-outlined text-base">lock</span>
+          Categories activate once you upload your Excel file.
+        </p>
+      )}
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -62,29 +36,29 @@ export default function EmissionCategories({ activities, loading, error, selecte
             <div key={i} className="h-28 bg-surface-container-low rounded-lg animate-pulse" />
           ))}
         </div>
-      ) : error ? (
-        <p className="text-error text-label-sm">Failed to load emission categories</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {[...activities].sort((a, b) => (ACTIVITY_ORDER[a.name] ?? 99) - (ACTIVITY_ORDER[b.name] ?? 99)).map((activity) => {
-            const isSelected = selected.has(activity.id);
-            const icon = ACTIVITY_ICONS[activity.name] ?? "category";
-            const description = ACTIVITY_DESCRIPTIONS[activity.name] ?? "";
+          {[...items].sort((a, b) => (ACTIVITY_DISPLAY[a.name]?.order ?? 99) - (ACTIVITY_DISPLAY[b.name]?.order ?? 99)).map((activity) => {
+            const isSelected = !disabled && selected.has(activity.id);
+            const display = ACTIVITY_DISPLAY[activity.name];
+            const icon = display?.icon ?? "category";
+            const description = display?.description ?? "";
             const fallback = { bg: "bg-surface", border: "border-outline-variant", icon: "text-on-surface-variant", text: "text-on-surface-variant" };
-            const colors = ACTIVITY_COLORS[activity.name] ?? { unselected: fallback, selected: fallback };
-            const c = isSelected ? colors.selected : colors.unselected;
+            const colors = display?.colors ?? { unselected: fallback, selected: fallback };
+            const c = disabled ? DISABLED_COLORS : isSelected ? colors.selected : colors.unselected;
 
             return (
-              <label key={activity.id} className="relative cursor-pointer">
+              <label key={activity.id} className={`relative ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}>
                 <input
                   type="checkbox"
                   checked={isSelected}
+                  disabled={disabled}
                   onChange={() => onToggle(activity.id)}
                   className="sr-only peer"
                 />
                 <div
                   className={`h-full rounded-lg border p-4 transition-all ${c.bg} ${c.border} ${
-                    isSelected ? "shadow-[0_4px_12px_rgba(0,0,0,0.08)]" : "hover:brightness-95"
+                    isSelected ? "shadow-[0_4px_12px_rgba(0,0,0,0.08)]" : disabled ? "" : "hover:brightness-95"
                   }`}
                 >
                   <div className="flex justify-between items-start mb-3">
@@ -105,7 +79,7 @@ export default function EmissionCategories({ activities, loading, error, selecte
                       <div className="w-5 h-5 rounded-full border border-outline-variant" />
                     )}
                   </div>
-                  <h3 className="text-[18px] font-medium text-on-surface">{activity.name}</h3>
+                  <h3 className={`text-[18px] font-medium ${disabled ? "text-slate-400" : "text-on-surface"}`}>{activity.name}</h3>
                   <p className={`text-caption mt-1 ${c.text}`}>{description}</p>
                 </div>
               </label>

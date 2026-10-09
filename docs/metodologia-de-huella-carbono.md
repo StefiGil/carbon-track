@@ -95,6 +95,7 @@ Fuera de alcance por ahora: Alcance 3 (transporte de personas, residuos, compras
 
 | Fuente | Factor | Unidad | Referencia |
 |---|---|---|---|
+| Electricidad 2006 a 2018 | 0,516 / 0,509 / 0,540 / 0,538 / 0,526 / 0,535 / 0,526 / 0,519 / 0,517 / 0,523 / 0,511 / 0,477 / 0,464 | kg CO₂/kWh | Secretaría de Energía (MOS) |
 | Electricidad 2019 | 0,428 | kg CO₂/kWh | Secretaría de Energía (Margen de Operación Simple) |
 | Electricidad 2020 | 0,443 | kg CO₂/kWh | Secretaría de Energía (MOS) |
 | Electricidad 2021 | 0,459 | kg CO₂/kWh | Secretaría de Energía (MOS) |
@@ -111,7 +112,7 @@ Criterios de selección:
 - **Combustibles líquidos:** EPA Emission Factors Hub 2025.
 - Gas y combustibles son constantes en el tiempo (dependen de las propiedades fisicoquímicas del combustible, no de la matriz energética). Solo el factor eléctrico varía por año.
 
-**faltan agregar todos los factores de emision a disposicion (podemos agregarlo a algunas de las tareas)
+Los factores están cargados en la base para los años 2006 a 2023 (electricidad según la serie MOS; gas, gasoil y nafta con el mismo valor en cada año). El detalle versionado está en `prisma/data/emission-factors.ts`, que alimenta `prisma/seed.ts`. Cada factor guarda su fuente y su URL.
 
 ### Por qué Margen de Operación y no IEA
 

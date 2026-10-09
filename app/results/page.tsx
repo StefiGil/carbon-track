@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import ReportHeader from "../components/results/ReportHeader";
+import FactorRangeNotice from "../components/results/FactorRangeNotice";
 import ExecutiveSummary from "../components/results/ExecutiveSummary";
 import EmissionsDonutChart from "../components/results/EmissionsDonutChart";
 import EmissionsBarChart from "../components/results/EmissionsBarChart";
@@ -83,11 +84,13 @@ export default function ResultsPage() {
     <main className="flex-1 w-full px-6 py-8 md:px-12 md:py-16 flex flex-col items-center">
       <div className="w-full max-w-[1000px] space-y-8">
         <ReportHeader
-          institution={result.institution.name}
+          institution={params.get("institutionName")?.trim() || result.institution.name}
           yearFrom={result.period.yearFrom}
           yearTo={result.period.yearTo}
           generatedAt={generatedAt}
         />
+
+        <FactorRangeNotice yearFrom={result.period.yearFrom} yearTo={result.period.yearTo} />
 
         <ExecutiveSummary
           totalCo2e={result.totalCo2e}

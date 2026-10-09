@@ -1,6 +1,6 @@
 # 005 - Nombre de institucion y categorias en gris
 
-Estado: pendiente
+Estado: hecha
 
 ## Objetivo
 
@@ -55,3 +55,13 @@ Mejorar la pagina de Analisis para que la persona entienda mejor que va a config
 ## Depende de
 
 - Ninguna tarea previa. Conviene hacerla despues de la 003 si cambian las rutas de las paginas.
+
+## Avance realizado
+
+- Nuevo componente `InstitutionNameInput` debajo del selector de tipo, con etiqueta "Institution Name (optional)", limite de 100 caracteres y texto de ayuda.
+- El nombre es opcional: si se escribe, viaja por query string (`institutionName`) a `/results` y se muestra en "Institution" del encabezado; si queda vacio, se muestra el tipo de institucion. No se envia a la API.
+- "Generated On" sigue siendo automatica.
+- Se quito el texto de ayuda bajo el input a pedido de Stefania.
+- Tarjetas de categorias en gris y sin interaccion hasta que se sube el Excel, con el aviso "Categories activate once you upload your Excel file." `DataUpload` avisa con `onUploaded`, `app/analysis/page.tsx` guarda el estado y lo pasa a `AnalysisConfigurator` y `EmissionCategories`. Si se cambia el tipo de institucion, vuelven a gris.
+- Parrafo introductorio: se decidio no reescribirlo. El campo de nombre es opcional y se entiende al verlo, y las categorias ya indican arriba de las tarjetas que se activan al subir el Excel. Se conserva la frase en negrita "Upload your consumption data to start.".
+- Probado por Stefania: al subir el Excel las tarjetas se activan con sus colores y el flujo funciona.
